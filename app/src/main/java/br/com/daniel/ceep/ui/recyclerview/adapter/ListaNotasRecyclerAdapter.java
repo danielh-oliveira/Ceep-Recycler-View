@@ -47,6 +47,11 @@ public class ListaNotasRecyclerAdapter extends RecyclerView.Adapter<ListaNotasRe
         return notas.size();
     }
 
+    public void adiciona(Nota nota) {
+        notas.add(nota);
+        notifyDataSetChanged();
+    }
+
     class NotaViewHolder extends RecyclerView.ViewHolder {
 
         private final TextView titulo;
