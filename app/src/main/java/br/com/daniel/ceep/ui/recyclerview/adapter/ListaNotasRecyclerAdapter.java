@@ -12,16 +12,22 @@ import java.util.List;
 
 import br.com.daniel.ceep.R;
 import br.com.daniel.ceep.model.Nota;
+import br.com.daniel.ceep.ui.recyclerview.adapter.listener.OnItemClickListener;
 
 
 public class ListaNotasRecyclerAdapter extends RecyclerView.Adapter<ListaNotasRecyclerAdapter.NotaViewHolder> {
 
     private final List<Nota> notas;
     private final Context context;
+    private OnItemClickListener onItemClickListener;
 
     public ListaNotasRecyclerAdapter(Context context, List<Nota> notas) {
         this.context = context;
         this.notas = notas;
+    }
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
     }
 
     @Override
@@ -56,18 +62,26 @@ public class ListaNotasRecyclerAdapter extends RecyclerView.Adapter<ListaNotasRe
 
         private final TextView titulo;
         private final TextView descricao;
+        private Nota nota;
 
         public NotaViewHolder(View itemView) {
             super(itemView);
             titulo = itemView.findViewById(R.id.item_nota_titulo);
             descricao = itemView.findViewById(R.id.item_nota_descricao);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onItemClickListener.onItemClick(nota);
+                }
+            });
         }
 
-        public void vincula(Nota nota) {
-            preencheCampos(nota);
+        public void vincula(Nota nota){
+            this.nota = nota;
+            preencheCampo(nota);
         }
 
-        private void preencheCampos(Nota nota) {
+        private void preencheCampo(Nota nota) {
             titulo.setText(nota.getTitulo());
             descricao.setText(nota.getDescricao());
         }

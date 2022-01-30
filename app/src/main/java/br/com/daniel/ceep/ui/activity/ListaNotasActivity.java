@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,6 +19,7 @@ import br.com.daniel.ceep.R;
 import br.com.daniel.ceep.dao.NotaDAO;
 import br.com.daniel.ceep.model.Nota;
 import br.com.daniel.ceep.ui.recyclerview.adapter.ListaNotasRecyclerAdapter;
+import br.com.daniel.ceep.ui.recyclerview.adapter.listener.OnItemClickListener;
 
 public class ListaNotasActivity extends AppCompatActivity {
 
@@ -58,11 +60,20 @@ public class ListaNotasActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (ehResultadoComNota(requestCode, resultCode, data)) {
             Nota notaRecebida = (Nota) data.getSerializableExtra(CHAVE_NOTA);
             adiciona(notaRecebida);
         }
-        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == 2 &&
+                resultCode == CODIGO_RESULTADO_NOTA_CRIADA &&
+                temNota(data)){
+            Nota notaRecebida = (Nota) data.getSerializableExtra(CHAVE_NOTA);
+            Toast.makeText(this,
+                    notaRecebida.getTitulo(),
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void adiciona(Nota nota) {
@@ -96,5 +107,14 @@ public class ListaNotasActivity extends AppCompatActivity {
     private void configuraAdapter(List<Nota> todasNotas, RecyclerView listaNotas) {
         adapter = new ListaNotasRecyclerAdapter(this, todasNotas);
         listaNotas.setAdapter(adapter);
+        adapter.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(Nota nota) {
+                Intent abreFormularioComNota = new Intent(ListaNotasActivity.this,
+                        FormularioNotaActivity.class);
+                abreFormularioComNota.putExtra(CHAVE_NOTA, nota);
+                startActivityForResult(abreFormularioComNota, 2);
+            }
+        });
     }
 }
