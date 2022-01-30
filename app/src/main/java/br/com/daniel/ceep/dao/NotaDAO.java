@@ -15,7 +15,7 @@ public class NotaDAO {
         return (List<Nota>) notas.clone();
     }
 
-    public void insere(Nota notas) {
+    public void insere(Nota... notas) {
         NotaDAO.notas.addAll(Arrays.asList(notas));
     }
 
